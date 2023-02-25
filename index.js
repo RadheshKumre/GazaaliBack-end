@@ -68,4 +68,42 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+// Edit profile API endpoint
+app.put('/edituser/:mobileNumber', async (req, res) => {
+    const mobileNumber = req.params.mobileNumber;
+    const { firstName, lastName, email, pin } = req.body;
+  
+    // Find the user by mobile number
+    const user = await User.findOne({ mobileNumber });
+  
+    if (!user) {
+      res.status(404).send('User not found');
+    } else {
+      // Update the user's information
+      user.firstName = firstName || user.firstName;
+      user.lastName = lastName || user.lastName;
+      user.email = email || user.email;
+      user.pin = pin || user.pin;
+  
+      await user.save();
+      res.send('Profile updated successfully');
+    }
+});
+
+
+//get user profile 
+app.get('/getuser/:mobileNumber', async (req, res) => {
+    const mobileNumber = req.params.mobileNumber;
+  
+    // Find the user by mobile number
+    const user = await User.findOne({ mobileNumber });
+  
+    if (!user) {
+      res.status(404).send('User not found');
+    } else {
+      res.send(user);
+    }
+});
+  
 app.listen(port, () => console.log(`Server running on port ${port}`));
