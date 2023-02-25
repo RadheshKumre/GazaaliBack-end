@@ -16,9 +16,9 @@ const userSchema = new mongoose.Schema({
     _id: String, // Set the mobileNumber field as the primary key
     firstName: String,
     lastName: String,
-    mobileNumber: { type: Number, unique: true }, // Add a unique index to the mobileNumber field
+    mobileNumber: { type: String, unique: true }, // Add a unique index to the mobileNumber field
     email: String,
-    pin: Number,
+    pin: String,
   });
   
   userSchema.pre('save', function (next) {
@@ -38,7 +38,17 @@ app.post('/signup', async (req, res) => {
 
   if (userExists) {
     res.status(400).send('User already exists');
-  } else {
+  }
+  else if (mobileNumber.length!==10 && pin.length!==4){
+    res.status(401).send('Mobile Number should be 10 digit number ! and Pin should be 4 digit pin!')
+  } 
+  else if (mobileNumber.length!==10){
+    res.status(401).send('Mobile Number is not equal to 10 digit!')
+  }
+  else if (pin.length!==4){
+    res.status(401).send('Pin should be a 4 digit pin!')
+  }
+  else {
     const newUser = new User({
       firstName,
       lastName,
@@ -46,7 +56,6 @@ app.post('/signup', async (req, res) => {
       email,
       pin,
     });
-
     await newUser.save();
     res.send('User created successfully');
   }
