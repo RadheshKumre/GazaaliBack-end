@@ -186,18 +186,25 @@ app.post('/meet', async (req, res) => {
     res.send({"message":'Meeting data successfully'});
   });
  
-// //Dashboard
-// app.post('/dashboard', async (req, res) => {
-//     const { email } = req.body;
+
+//Dashboard
+app.post('/dashboard', async (req, res) => {
+    const { email } = req.body;
   
 
-//     // Find the user by mobile number
-//     const user = await User.findOne({ email });
-//     let userId = user._id
-//     const meta = await Meet.find({userId});
-//     // let meetingids = meta.meetId
-//     res.send(meta)
-// });
+    // Find the user by mobile number
+    const user = await User.findOne({ email });
+    if(!email){
+        res.status(404).send({"message":'User not found'});
+    }
+    else{
+        let userId = user._id
+        const meta = await Meet.find({userId});
+        // let meetingids = meta.meetId
+        res.status(200).send({"data":meta});
+    }
+    
+});
 
 
 
